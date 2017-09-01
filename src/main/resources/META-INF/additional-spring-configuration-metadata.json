@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "cas.server.url",
+    "type": "java.lang.String",
+    "description": "A description for 'cas.server.url'"
+  },
+  {
+    "name": "cas.server.login_url",
+    "type": "java.lang.String",
+    "description": "A description for 'cas.server.login_url'"
+  },
+  {
+    "name": "cas.server.logout_url",
+    "type": "java.lang.String",
+    "description": "A description for 'cas.server.logout_url'"
+  },
+  {
+    "name": "app.url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.url'"
+  },
+  {
+    "name": "app.login_url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.login_url'"
+  },
+  {
+    "name": "app.logout_url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.logout_url'"
+  }
+]}
