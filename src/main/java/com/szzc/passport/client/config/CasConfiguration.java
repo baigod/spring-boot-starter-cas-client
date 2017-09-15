@@ -1,4 +1,4 @@
-package com.szzc.passport.client;
+package com.szzc.passport.client.config;
 
 import java.net.Inet4Address;
 import java.util.HashSet;
@@ -33,6 +33,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.szzc.passport.client.service.CasUserDetailsService;
 import com.szzc.passport.client.session.ClusterSingleSignOutFilter;
 import com.szzc.passport.client.session.ClusterSingleSignOutHandler;
 import com.szzc.passport.client.session.ConCurrentHashMapBackedSessionMappingStorage;

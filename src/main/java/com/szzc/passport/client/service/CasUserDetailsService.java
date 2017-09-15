@@ -1,4 +1,4 @@
-package com.szzc.passport.client;
+package com.szzc.passport.client.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

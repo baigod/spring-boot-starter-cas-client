@@ -8,9 +8,12 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
 
+import com.szzc.passport.client.config.CasConfiguration;
+import com.szzc.passport.client.config.ErrorPageConfiguration;
+
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({ CasConfiguration.class })
+@Import({ CasConfiguration.class, ErrorPageConfiguration.class })
 @Documented
 public @interface EnableCas {
 }

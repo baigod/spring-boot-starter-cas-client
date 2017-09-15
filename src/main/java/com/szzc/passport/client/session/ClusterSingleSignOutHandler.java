@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import com.utouu.commons.base.utils.httpclient.HttpClientFactory;
+import com.szzc.passport.client.util.HttpInvokerHandle;
 
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
@@ -438,7 +438,7 @@ public final class ClusterSingleSignOutHandler {
 				String paramName = enumeration.nextElement();
 				map.put(paramName, request.getParameter(paramName));
 			}
-			HttpClientFactory fac = HttpClientFactory.createSSLInstance();
+			HttpInvokerHandle fac = HttpInvokerHandle.createInstance();
 			// 三秒执行完，否则st会失效不可用
 			fac.setRequestTimeout(3000);
 			fac.setSocketTimeout(3000);

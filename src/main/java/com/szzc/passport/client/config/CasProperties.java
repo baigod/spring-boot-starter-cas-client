@@ -1,4 +1,4 @@
-package com.szzc.passport.client;
+package com.szzc.passport.client.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
