@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.Inflater;
 
 import javax.servlet.ServletException;
@@ -42,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import com.szzc.passport.client.util.HttpInvokerHandle;
+import com.utouu.commons.base.utils.httpclient.HttpClientFactory;
 
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
@@ -414,6 +416,8 @@ public final class ClusterSingleSignOutHandler {
 	public static String currentNode = null;
 
 	/*--------cluster client begin--------*/
+	private final ExecutorService pool = Executors.newFixedThreadPool(8);
+
 	/**
 	 * destroy dession
 	 * 
@@ -438,16 +442,21 @@ public final class ClusterSingleSignOutHandler {
 				String paramName = enumeration.nextElement();
 				map.put(paramName, request.getParameter(paramName));
 			}
-			HttpInvokerHandle fac = HttpInvokerHandle.createInstance();
+			HttpClientFactory fac = HttpClientFactory.createSSLInstance();
 			// 三秒执行完，否则st会失效不可用
 			fac.setRequestTimeout(3000);
 			fac.setSocketTimeout(3000);
 			fac.setConnectTimeout(3000);
-			try {
-				fac.doPost("http://" + ip + "/login", map);
-			} catch (Exception e) {
-				logger.warn("clo post failed {}", e);
-			}
+			pool.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						fac.doPost("http://" + ip + "/login", map);
+					} catch (Exception e) {
+						logger.warn("clo post failed {}", e);
+					}
+				}
+			});
 		}
 	}
 	/*--------cluster client end--------*/
