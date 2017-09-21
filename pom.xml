@@ -76,11 +76,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.utouu.commons</groupId>
-			<artifactId>utouu-commons-base-utils</artifactId>
-			<version>1.0.7</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>

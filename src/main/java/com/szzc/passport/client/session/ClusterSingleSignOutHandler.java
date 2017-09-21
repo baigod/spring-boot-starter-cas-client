@@ -18,6 +18,12 @@
  */
 package com.szzc.passport.client.session;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -28,12 +34,35 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.Inflater;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.ConnectionConfig;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
 import org.jasig.cas.client.Protocol;
 import org.jasig.cas.client.configuration.ConfigurationKeys;
 import org.jasig.cas.client.session.HashMapBackedSessionMappingStorage;
@@ -43,8 +72,6 @@ import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
-
-import com.utouu.commons.base.utils.httpclient.HttpClientFactory;
 
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
@@ -442,22 +469,112 @@ public final class ClusterSingleSignOutHandler {
 				String paramName = enumeration.nextElement();
 				map.put(paramName, request.getParameter(paramName));
 			}
-			HttpClientFactory fac = HttpClientFactory.createSSLInstance();
 			// 三秒执行完，否则st会失效不可用
-			fac.setRequestTimeout(3000);
-			fac.setSocketTimeout(3000);
-			fac.setConnectTimeout(3000);
 			pool.execute(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						fac.doPost("http://" + ip + "/login", map);
+						doPost("http://" + ip + "/login", map);
 					} catch (Exception e) {
 						logger.warn("clo post failed {}", e);
 					}
 				}
 			});
 		}
+	}
+
+	/**
+	 * 执行带client的post请求
+	 * 
+	 * @param uri
+	 * @param nameValuePairs
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws HttpException
+	 */
+	public String doPost( String uri, Map<String, Object> map) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		if (null != map && map.size() > 0)
+			for (String key : map.keySet()) {
+				Object val = map.get(key);
+				String valStr = "";
+				if (null != val)
+					valStr = String.valueOf(val);
+				params.add(new BasicNameValuePair(key, valStr));
+			}
+
+		// 配置URI
+		HttpPost post = new HttpPost(uri);
+		int timeout = 3000; // 3秒
+		post.setConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout).setConnectTimeout(timeout)
+				.setSocketTimeout(timeout).build());
+		post.setHeader(HttpHeaders.ACCEPT, "application/json");
+		post.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
+		post.setHeader(HttpHeaders.USER_AGENT, "luheng/httpclient");
+		post.setHeader("X-Requested-With", "XMLHttpRequest");
+
+		// 传参
+		if (null != params && params.size() > 0) {
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, Consts.UTF_8);
+			post.setEntity(entity);
+		}
+
+		// 执行请求
+		try {
+			CloseableHttpClient client = this.createSSLClientDefault();
+			CloseableHttpResponse response = client.execute(post);
+			String result = returnStringRes(response);
+			return result;
+		} catch (IOException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	// 返回字符串
+	private String returnStringRes(CloseableHttpResponse response) throws IOException, HttpResponseException {
+		StatusLine statusLine = response.getStatusLine();
+		String result = "";
+		if (statusLine.getStatusCode() >= 200 && statusLine.getStatusCode() < 300) {
+			// 获取返回实体
+			HttpEntity responseEntity = response.getEntity();
+			result = EntityUtils.toString(responseEntity, Consts.UTF_8);
+			// 释放资源，关闭流
+			EntityUtils.consume(responseEntity);
+			response.close();
+		} else {
+			throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
+		}
+		return result;
+	}
+
+	/**
+	 * 创建支持请求SSL服务的客户端
+	 * 
+	 * @return
+	 */
+	private CloseableHttpClient createSSLClientDefault() {
+		// 允许所有ssl
+		SSLContext sslContext;
+		try {
+			sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+				@Override
+				public boolean isTrusted(java.security.cert.X509Certificate[] chain, String authType)
+						throws java.security.cert.CertificateException {
+					return true;
+				}
+			}).build();
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			logger.error(ExceptionUtils.getStackTrace(e));
+			throw new RuntimeException(e);
+		}
+		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
+		return HttpClients.custom().setSSLSocketFactory(sslsf).setMaxConnTotal(8).setMaxConnPerRoute(8)
+				.setRetryHandler(new DefaultHttpRequestRetryHandler(1, true))
+				.setDefaultConnectionConfig(ConnectionConfig.custom().setCharset(Charset.defaultCharset()).build())
+				.build();
 	}
 	/*--------cluster client end--------*/
 
