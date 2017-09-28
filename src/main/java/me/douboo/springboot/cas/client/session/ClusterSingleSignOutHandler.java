@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.szzc.passport.client.session;
+package me.douboo.springboot.cas.client.session;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -455,13 +455,13 @@ public final class ClusterSingleSignOutHandler {
 			logger.warn("集群初始化失败!");
 			return;
 		}
-		for (String ip : clusters) {
+		for (final String ip : clusters) {
 			logger.debug("集群登出地址: {}", ip);
 			if (ip.equals(currentNode)) {
 				logger.debug("当前节点不执行clo");
 				continue;
 			}
-			Map<String, Object> map = new HashMap<String, Object>();
+			final Map<String, Object> map = new HashMap<String, Object>();
 			map.put(this.isClusterNodesLogoutRequestParameterName, "1");
 			map.put(this.artifactParameterName, token);
 			Enumeration<String> enumeration = request.getParameterNames();

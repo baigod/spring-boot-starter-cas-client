@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.szzc.passport.client.session;
+package me.douboo.springboot.cas.client.session;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;

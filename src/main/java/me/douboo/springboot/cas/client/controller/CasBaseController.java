@@ -1,10 +1,10 @@
-package com.szzc.passport.client.controller;
+package me.douboo.springboot.cas.client.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.szzc.passport.client.entity.CasUser;
-import com.szzc.passport.client.exceptions.SessionTimeoutException;
-import com.szzc.passport.client.util.CasUtils;
+import me.douboo.springboot.cas.client.entity.CasUser;
+import me.douboo.springboot.cas.client.exceptions.SessionTimeoutException;
+import me.douboo.springboot.cas.client.util.CasUtils;
 
 public class CasBaseController {
 

@@ -1,4 +1,4 @@
-package com.szzc.passport.client.constants;
+package me.douboo.springboot.cas.client.constants;
 
 public interface Constants {
 

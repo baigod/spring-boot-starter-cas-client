@@ -1,4 +1,4 @@
-package com.szzc.passport.client.entity;
+package me.douboo.springboot.cas.client.entity;
 
 import java.io.Serializable;
 

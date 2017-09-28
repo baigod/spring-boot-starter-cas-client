@@ -1,4 +1,4 @@
-package com.szzc.passport.client.config;
+package me.douboo.springboot.cas.client.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

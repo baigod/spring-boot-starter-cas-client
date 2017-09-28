@@ -1,4 +1,4 @@
-package com.szzc.passport.client.util;
+package me.douboo.springboot.cas.client.util;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import org.jasig.cas.client.validation.Assertion;
 import org.springframework.security.cas.authentication.CasAuthenticationToken;
 import org.springframework.util.CollectionUtils;
 
-import com.szzc.passport.client.entity.CasUser;
+import me.douboo.springboot.cas.client.entity.CasUser;
 
 public class CasUtils {
 

@@ -1,4 +1,4 @@
-package com.szzc.passport.client.config;
+package me.douboo.springboot.cas.client.config;
 
 import java.net.Inet4Address;
 import java.util.HashSet;
@@ -33,12 +33,13 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.szzc.passport.client.service.CasUserDetailsService;
-import com.szzc.passport.client.session.ClusterSingleSignOutFilter;
-import com.szzc.passport.client.session.ClusterSingleSignOutHandler;
-import com.szzc.passport.client.session.ConCurrentHashMapBackedSessionMappingStorage;
-import com.szzc.spring.boot.starter.zookeeper.EnableZookeeper;
-import com.szzc.spring.boot.starter.zookeeper.ZookeeperUtils;
+
+import me.douboo.springboot.cas.client.service.CasUserDetailsService;
+import me.douboo.springboot.cas.client.session.ClusterSingleSignOutFilter;
+import me.douboo.springboot.cas.client.session.ClusterSingleSignOutHandler;
+import me.douboo.springboot.cas.client.session.ConCurrentHashMapBackedSessionMappingStorage;
+import me.douboo.springboot.zookeeper.EnableZookeeper;
+import me.douboo.springboot.zookeeper.ZookeeperUtils;
 
 /**
  * 配置CAS 

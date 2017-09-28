@@ -1,4 +1,4 @@
-package com.szzc.passport.client.exceptions;
+package me.douboo.springboot.cas.client.exceptions;
 
 public class SessionTimeoutException extends RuntimeException {
 

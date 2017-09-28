@@ -1,4 +1,4 @@
-package com.szzc.passport.client.interceptor;
+package me.douboo.springboot.cas.client.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.szzc.passport.client.constants.Constants;
-import com.szzc.passport.client.entity.CasUser;
-import com.szzc.passport.client.util.CasUtils;
+import me.douboo.springboot.cas.client.constants.Constants;
+import me.douboo.springboot.cas.client.entity.CasUser;
+import me.douboo.springboot.cas.client.util.CasUtils;
 
 public class UserSessionInterceptor extends HandlerInterceptorAdapter {
 
