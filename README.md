@@ -51,4 +51,4 @@ server.session.timeout=3600
 当然，有钱捧个钱场(微信支付），没钱捧个人场，谢谢各位。
 
 捐助开发者<br>
-![pay](http://cdn.51szzc.com/custom/pay2luheng.png?v1)
+![pay](http://baishen.oss-cn-shanghai.aliyuncs.com/pay2luheng.png?v1) 
