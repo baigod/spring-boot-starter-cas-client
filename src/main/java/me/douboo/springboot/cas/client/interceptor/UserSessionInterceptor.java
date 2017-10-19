@@ -21,7 +21,7 @@ public class UserSessionInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		HttpSession session = request.getSession(false);
 		if (null != session)
-			logger.info(session.getId());
+			logger.debug(session.getId());
 
 		CasUser user = CasUtils.getCurrentUser(request);
 		if (user == null) {
