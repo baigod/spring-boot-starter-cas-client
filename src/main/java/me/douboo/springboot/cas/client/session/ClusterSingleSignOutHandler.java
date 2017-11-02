@@ -470,16 +470,16 @@ public final class ClusterSingleSignOutHandler {
 				map.put(paramName, request.getParameter(paramName));
 			}
 			// 三秒执行完，否则st会失效不可用
-//			pool.execute(new Runnable() {
-//				@Override
-//				public void run() {
+			pool.execute(new Runnable() {
+				@Override
+				public void run() {
 					try {
 						doPost("http://" + ip + "/login", map);
 					} catch (Exception e) {
 						logger.warn("clo post failed {}", e);
 					}
-//				}
-//			});
+				}
+			});
 		}
 	}
 
