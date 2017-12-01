@@ -443,7 +443,7 @@ public final class ClusterSingleSignOutHandler {
 	public static String currentNode = null;
 
 	/*--------cluster client begin--------*/
-	private final ExecutorService pool = Executors.newFixedThreadPool(8);
+//	private final ExecutorService pool = Executors.newFixedThreadPool(8);
 
 	/**
 	 * destroy dession
