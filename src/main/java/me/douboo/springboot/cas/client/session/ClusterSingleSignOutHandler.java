@@ -26,9 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,7 +43,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
-import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
@@ -72,6 +69,9 @@ import org.jasig.cas.client.util.XmlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+
+import com.alibaba.fastjson.JSONObject;
+
 
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
@@ -461,25 +461,17 @@ public final class ClusterSingleSignOutHandler {
 				logger.debug("当前节点不执行clo");
 				continue;
 			}
-			final Map<String, Object> map = new HashMap<String, Object>();
-			map.put(this.isClusterNodesLogoutRequestParameterName, "1");
-			map.put(this.artifactParameterName, token);
-			Enumeration<String> enumeration = request.getParameterNames();
-			while (enumeration.hasMoreElements()) {
-				String paramName = enumeration.nextElement();
-				map.put(paramName, request.getParameter(paramName));
-			}
-			// 三秒执行完，否则st会失效不可用
-			pool.execute(new Runnable() {
-				@Override
-				public void run() {
+//			// 三秒执行完，否则st会失效不可用
+//			pool.execute(new Runnable() {
+//				@Override
+//				public void run() {
 					try {
-						doPost("http://" + ip + "/login", map);
+						mockPost("http://" + ip + "/login",token, request);
 					} catch (Exception e) {
 						logger.warn("clo post failed {}", e);
 					}
-				}
-			});
+//				}
+//			});
 		}
 	}
 
@@ -493,26 +485,27 @@ public final class ClusterSingleSignOutHandler {
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	public String doPost( String uri, Map<String, Object> map) {
+	private String mockPost(String uri, String token,HttpServletRequest request) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		if (null != map && map.size() > 0)
-			for (String key : map.keySet()) {
-				Object val = map.get(key);
-				String valStr = "";
-				if (null != val)
-					valStr = String.valueOf(val);
-				params.add(new BasicNameValuePair(key, valStr));
-			}
+		params.add(new BasicNameValuePair(this.isClusterNodesLogoutRequestParameterName,  "1"));
+		params.add(new BasicNameValuePair(this.artifactParameterName,token));
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String paramName = parameterNames.nextElement();
+			params.add(new BasicNameValuePair(paramName, request.getParameter(paramName)));
+		}
 
 		// 配置URI
 		HttpPost post = new HttpPost(uri);
 		int timeout = 3000; // 3秒
 		post.setConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout).setConnectTimeout(timeout)
 				.setSocketTimeout(timeout).build());
-		post.setHeader(HttpHeaders.ACCEPT, "application/json");
-		post.setHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
-		post.setHeader(HttpHeaders.USER_AGENT, "luheng/httpclient");
-		post.setHeader("X-Requested-With", "XMLHttpRequest");
+		
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+			post.setHeader(headerName, request.getHeader(headerName));
+		}
 
 		// 传参
 		if (null != params && params.size() > 0) {
@@ -526,11 +519,10 @@ public final class ClusterSingleSignOutHandler {
 			CloseableHttpResponse response = client.execute(post);
 			String result = returnStringRes(response);
 			return result;
-		} catch (IOException e) {
-			logger.error(ExceptionUtils.getStackTrace(e));
+		} catch (Exception e) {
+			logger.error("post uri {} ,param {} ,header {}", uri, JSONObject.toJSONString(params),JSONObject.toJSONString(headerNames), ExceptionUtils.getStackTrace(e));
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	// 返回字符串

@@ -10,7 +10,7 @@
 
 	<groupId>me.douboo.springboot</groupId>
 	<artifactId>spring-boot-starter-cas-client</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.4-NAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-cas-client</name>

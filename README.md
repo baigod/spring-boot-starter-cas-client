@@ -48,7 +48,7 @@ server.session.timeout=3600
 ```
 
 在兴趣的驱动下,写一个`免费`的东西，有欣喜，也还有汗水，希望你喜欢我的作品，同时也能支持一下。
-当然，有钱捧个钱场(微信支付），没钱捧个人场，谢谢各位。
+当然，有钱捧个钱场(ETH），没钱捧个人场，谢谢各位。
 
 捐助开发者<br>
-![pay](http://baishen.oss-cn-shanghai.aliyuncs.com/pay2luheng.png?v1) 
+0x23b96A20Fae711ED6D286feAEED437a6831e3dD7
