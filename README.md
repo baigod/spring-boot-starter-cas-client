@@ -1,10 +1,9 @@
 # spring-boot-starter-cas-client
-spring boot 快速集成Cas Client，并解决集群客户端单点登出的问题
+Spring boot quickly integrates Cas Client and solves the problem of single point boarding in cluster clients
 
-目前客户端默认依赖spring-session + redis做分布式session存储,默认集成zk做客户端节点注册（用于单点登出时动态分发logoutRequest）
+At present, the client relies on spring-session + redis to do distributed session storage, and ZK is integrated by default to do client node registration.
 
-
-#使用方式
+#Mode of use
 ```java
 @SpringBootApplication
 @EnableCas
@@ -18,11 +17,12 @@ public class Application {
 ```
 
 
-application.properties 配置如下<br>
+application.properties configuration<br>
 
 ```yaml
-spring.application.name=myApplication   #zk默认取这条配置作为节点名，所以建议配置<br>
-server.port=30602    #zk默认取这条配置作为节点名拼接，所以建议配置<br>
+spring.application.name=myApplication   #ZK acquiescence by default for this configuration as a node name, so it is recommended to configure<br>
+server.port=30602    #ZK acquiescence by taking this configuration as a node name splicing, so it is recommended to configure
+<br>
 
 #Cas<br>
 cas.server.url=https://passport.domain.com
@@ -38,7 +38,8 @@ spring.session.store-type=redis
 server.session.timeout=3600
 ```
 
-本项目的parent，可以自行修改，本人使用的是上层pom是
+
+The parent of this project can be modified by itself. I use the upper POM.xml.
 ```java
 <parent>
 	<groupId>org.springframework.boot</groupId>
@@ -47,8 +48,7 @@ server.session.timeout=3600
 </parent>
 ```
 
-在兴趣的驱动下,写一个`免费`的东西，有欣喜，也还有汗水，希望你喜欢我的作品，同时也能支持一下。
-当然，有钱捧个钱场(ETH），没钱捧个人场，谢谢各位。
 
-捐助开发者<br>
+
+Donation developer (ETH)<br>
 0x23b96A20Fae711ED6D286feAEED437a6831e3dD7
