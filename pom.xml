@@ -10,7 +10,7 @@
 
 	<groupId>me.douboo.springboot</groupId>
 	<artifactId>spring-boot-starter-cas-client</artifactId>
-	<version>1.0.4-NAPSHOT</version>
+	<version>1.0.4</version>
 	<packaging>jar</packaging>
 
 	<name>spring-boot-starter-cas-client</name>
@@ -154,7 +154,7 @@
 		<dependency>
 			<groupId>me.douboo.springboot</groupId>
 			<artifactId>spring-boot-starter-zookeeper</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
