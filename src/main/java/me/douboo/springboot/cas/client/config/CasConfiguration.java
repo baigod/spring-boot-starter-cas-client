@@ -191,6 +191,7 @@ public class CasConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	/* session 销毁监听,不过好像没屌用 */
+	@SuppressWarnings("deprecation")
 	@Bean
 	public ServletListenerRegistrationBean<SingleSignOutHttpSessionListener> ssoListenerRegistrationBean() {
 		// SingleSignOutHttpSessionListener实现了javax.servlet.http.HttpSessionListener接口，用于监听session销毁事件
