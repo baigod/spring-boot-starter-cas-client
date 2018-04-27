@@ -30,6 +30,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -42,7 +43,8 @@ import me.douboo.springboot.zookeeper.EnableZookeeper;
 import me.douboo.springboot.zookeeper.ZookeeperUtils;
 
 /**
- * 配置CAS 
+ * 配置CAS
+ * 
  * @author Created by luheng on 2017/2/17.
  */
 @Configuration
@@ -203,5 +205,10 @@ public class CasConfiguration extends WebSecurityConfigurerAdapter {
 		registration.setName("SingleSignOutHttpSessionListener");
 		registration.setEnabled(true);
 		return registration;
+	}
+
+	@Bean
+	public static ConfigureRedisAction configureRedisAction() {
+		return ConfigureRedisAction.NO_OP;
 	}
 }
