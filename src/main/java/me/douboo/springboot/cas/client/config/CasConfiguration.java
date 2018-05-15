@@ -82,8 +82,7 @@ public class CasConfiguration extends WebSecurityConfigurerAdapter {
 				logger.debug("节点{}/{}创建成功", path, node);
 			}
 			ClusterSingleSignOutHandler.clusters = new HashSet<String>(this.zookeeperUtils.listNodesByPath(path));
-			logger.debug("当前路径下共有{}个节点:{}", ClusterSingleSignOutHandler.clusters.size(),
-					JSONObject.toJSONString(ClusterSingleSignOutHandler.clusters));
+			logger.debug("当前路径下共有{}个节点:{}", ClusterSingleSignOutHandler.clusters.size(), JSONObject.toJSONString(ClusterSingleSignOutHandler.clusters));
 
 		} catch (Exception e) {
 			logger.warn(e.getMessage());
@@ -108,11 +107,11 @@ public class CasConfiguration extends WebSecurityConfigurerAdapter {
 				.and().logout().permitAll()// 定义logout不需要验证
 				.and().formLogin();// 使用form表单登录
 
-		http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint()).and()
-				.addFilter(casAuthenticationFilter()).addFilterBefore(casLogoutFilter(), LogoutFilter.class)
-				.addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+		http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint()).and().addFilter(casAuthenticationFilter())
+				.addFilterBefore(casLogoutFilter(), LogoutFilter.class).addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
 
 		http.csrf().disable(); // 禁用CSRF
+		http.headers().frameOptions().disable(); //禁用X-Frame-Options
 	}
 
 	/* 认证的入口 */
@@ -164,11 +163,9 @@ public class CasConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
-		Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(
-				casProperties.getServer().getUrl());
+		Cas20ServiceTicketValidator cas20ServiceTicketValidator = new Cas20ServiceTicketValidator(casProperties.getServer().getUrl());
 		if (!StringUtils.isEmpty(memcachedServers)) {
-			cas20ServiceTicketValidator.setProxyGrantingTicketStorage(
-					new MemcachedBackedProxyGrantingTicketStorageImpl(memcachedServers.split(",")));
+			cas20ServiceTicketValidator.setProxyGrantingTicketStorage(new MemcachedBackedProxyGrantingTicketStorageImpl(memcachedServers.split(",")));
 		}
 		return cas20ServiceTicketValidator;
 	}
@@ -186,8 +183,7 @@ public class CasConfiguration extends WebSecurityConfigurerAdapter {
 	/* 请求单点退出过滤器 */
 	@Bean
 	public LogoutFilter casLogoutFilter() {
-		LogoutFilter logoutFilter = new LogoutFilter(casProperties.getServer().getLogoutUrl(),
-				new SecurityContextLogoutHandler());
+		LogoutFilter logoutFilter = new LogoutFilter(casProperties.getServer().getLogoutUrl(), new SecurityContextLogoutHandler());
 		logoutFilter.setFilterProcessesUrl(casProperties.getClient().getLogoutUrl());
 		return logoutFilter;
 	}
