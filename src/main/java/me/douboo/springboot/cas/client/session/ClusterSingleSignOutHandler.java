@@ -70,7 +70,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
-
 /**
  * Performs CAS single sign-out operations in an API-agnostic fashion.
  *
@@ -116,8 +115,7 @@ public final class ClusterSingleSignOutHandler {
 
 	private List<String> safeParameters;
 
-	private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy()
-			: new Servlet25LogoutStrategy();
+	private LogoutStrategy logoutStrategy = isServlet30() ? new Servlet30LogoutStrategy() : new Servlet25LogoutStrategy();
 
 	/*--------cluster client begin--------*/
 	/** Is clusterNodes logout request default is 0 , 0 : false , 1 : true */
@@ -146,8 +144,8 @@ public final class ClusterSingleSignOutHandler {
 
 	/**
 	 * @param name
-	 *            Name of parameter containing CAS logout request message for
-	 *            back channel SLO.
+	 *            Name of parameter containing CAS logout request message for back
+	 *            channel SLO.
 	 */
 	public void setLogoutParameterName(final String name) {
 		this.logoutParameterName = name;
@@ -163,8 +161,8 @@ public final class ClusterSingleSignOutHandler {
 
 	/**
 	 * @param name
-	 *            Name of parameter containing CAS logout request message for
-	 *            front channel SLO.
+	 *            Name of parameter containing CAS logout request message for front
+	 *            channel SLO.
 	 */
 	public void setFrontLogoutParameterName(final String name) {
 		this.frontLogoutParameterName = name;
@@ -172,8 +170,7 @@ public final class ClusterSingleSignOutHandler {
 
 	/**
 	 * @param name
-	 *            Name of parameter containing the state of the CAS server
-	 *            webflow.
+	 *            Name of parameter containing the state of the CAS server webflow.
 	 */
 	public void setRelayStateParameterName(final String name) {
 		this.relayStateParameterName = name;
@@ -196,8 +193,7 @@ public final class ClusterSingleSignOutHandler {
 			CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
 
 			if (CommonUtils.isBlank(this.casServerUrlPrefix)) {
-				logger.warn(
-						"Front Channel single sign out redirects are disabled when the 'casServerUrlPrefix' value is not set.");
+				logger.warn("Front Channel single sign out redirects are disabled when the 'casServerUrlPrefix' value is not set.");
 			}
 
 			if (this.artifactParameterOverPost) {
@@ -217,13 +213,11 @@ public final class ClusterSingleSignOutHandler {
 	 * @return True if request contains authentication token, false otherwise.
 	 */
 	private boolean isTokenRequest(final HttpServletRequest request) {
-		return CommonUtils
-				.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters));
+		return CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.artifactParameterName, this.safeParameters));
 	}
 
 	/**
-	 * Determines whether the given request is a CAS back channel logout
-	 * request.
+	 * Determines whether the given request is a CAS back channel logout request.
 	 *
 	 * @param request
 	 *            HTTP request.
@@ -231,13 +225,13 @@ public final class ClusterSingleSignOutHandler {
 	 * @return True if request is logout request, false otherwise.
 	 */
 	private boolean isBackChannelLogoutRequest(final HttpServletRequest request) {
-		return "POST".equals(request.getMethod()) && !isMultipartRequest(request) && CommonUtils
-				.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters));
+		return "POST".equals(request.getMethod()) && !isMultipartRequest(request)
+				&& CommonUtils.isNotBlank(CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters));
 	}
 
 	/**
-	 * Determines whether the given request is a CAS front channel logout
-	 * request. Front Channel log out requests are only supported when the
+	 * Determines whether the given request is a CAS front channel logout request.
+	 * Front Channel log out requests are only supported when the
 	 * 'casServerUrlPrefix' value is set.
 	 *
 	 * @param request
@@ -251,8 +245,8 @@ public final class ClusterSingleSignOutHandler {
 	}
 
 	/**
-	 * Process a request regarding the SLO process: record the session or
-	 * destroy it.
+	 * Process a request regarding the SLO process: record the session or destroy
+	 * it.
 	 *
 	 * @param request
 	 *            the incoming HTTP request.
@@ -300,8 +294,7 @@ public final class ClusterSingleSignOutHandler {
 		// front channel logout -> the message needs to be base64 decoded +
 		// decompressed
 		if (isFrontChannelLogoutRequest(request)) {
-			logoutMessage = uncompressLogoutMessage(
-					CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
+			logoutMessage = uncompressLogoutMessage(CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
 		} else {
 			logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
 		}
@@ -348,8 +341,7 @@ public final class ClusterSingleSignOutHandler {
 		final HttpSession session = request.getSession(this.eagerlyCreateSessions);
 
 		if (session == null) {
-			logger.debug(
-					"No session currently exists (and none created).  Cannot record session information for single sign out.");
+			logger.debug("No session currently exists (and none created).  Cannot record session information for single sign out.");
 			return;
 		}
 
@@ -407,8 +399,7 @@ public final class ClusterSingleSignOutHandler {
 		// front channel logout -> the message needs to be base64 decoded +
 		// decompressed
 		if (isFrontChannelLogoutRequest(request)) {
-			logoutMessage = uncompressLogoutMessage(
-					CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
+			logoutMessage = uncompressLogoutMessage(CommonUtils.safeGetParameter(request, this.frontLogoutParameterName));
 		} else {
 			logoutMessage = CommonUtils.safeGetParameter(request, this.logoutParameterName, this.safeParameters);
 		}
@@ -441,7 +432,7 @@ public final class ClusterSingleSignOutHandler {
 	public static String currentNode = null;
 
 	/*--------cluster client begin--------*/
-//	private final ExecutorService pool = Executors.newFixedThreadPool(8);
+	// private final ExecutorService pool = Executors.newFixedThreadPool(8);
 
 	/**
 	 * destroy dession
@@ -459,17 +450,17 @@ public final class ClusterSingleSignOutHandler {
 				logger.debug("当前节点不执行clo");
 				continue;
 			}
-//			// 三秒执行完，否则st会失效不可用
-//			pool.execute(new Runnable() {
-//				@Override
-//				public void run() {
-					try {
-						mockPost("http://" + ip + "/login",token, request);
-					} catch (Exception e) {
-						logger.warn("clo post failed {}", e);
-					}
-//				}
-//			});
+			// // 三秒执行完，否则st会失效不可用
+			// pool.execute(new Runnable() {
+			// @Override
+			// public void run() {
+			try {
+				mockPost("http://" + ip + "/login", token, request);
+			} catch (Exception e) {
+				logger.warn("clo post failed {}", e);
+			}
+			// }
+			// });
 		}
 	}
 
@@ -483,10 +474,10 @@ public final class ClusterSingleSignOutHandler {
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	private String mockPost(String uri, String token,HttpServletRequest request) {
+	private String mockPost(String uri, String token, HttpServletRequest request) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair(this.isClusterNodesLogoutRequestParameterName,  "1"));
-		params.add(new BasicNameValuePair(this.artifactParameterName,token));
+		params.add(new BasicNameValuePair(this.isClusterNodesLogoutRequestParameterName, "1"));
+		params.add(new BasicNameValuePair(this.artifactParameterName, token));
 		Enumeration<String> parameterNames = request.getParameterNames();
 		while (parameterNames.hasMoreElements()) {
 			String paramName = parameterNames.nextElement();
@@ -496,19 +487,19 @@ public final class ClusterSingleSignOutHandler {
 		// 配置URI
 		HttpPost post = new HttpPost(uri);
 		int timeout = 3000; // 3秒
-		post.setConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout).setConnectTimeout(timeout)
-				.setSocketTimeout(timeout).build());
-		
-		Enumeration<String> headerNames = request.getHeaderNames();
-		while (headerNames.hasMoreElements()) {
-			String headerName = headerNames.nextElement();
-			post.setHeader(headerName, request.getHeader(headerName));
-		}
+		post.setConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout).setConnectTimeout(timeout).setSocketTimeout(timeout).build());
 
 		// 传参
 		if (null != params && params.size() > 0) {
 			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, Consts.UTF_8);
 			post.setEntity(entity);
+			post.setHeader("Content-Length", entity.getContentLength()+"");
+		}
+
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+			post.setHeader(headerName, request.getHeader(headerName));
 		}
 
 		// 执行请求
@@ -518,7 +509,7 @@ public final class ClusterSingleSignOutHandler {
 			String result = returnStringRes(response);
 			return result;
 		} catch (Exception e) {
-			logger.error("post uri {} ,param {} ,header {}", uri, JSONObject.toJSONString(params),JSONObject.toJSONString(headerNames), ExceptionUtils.getStackTrace(e));
+			logger.error("post uri {} ,param {} ,header {}", uri, JSONObject.toJSONString(params), JSONObject.toJSONString(headerNames), ExceptionUtils.getStackTrace(e));
 			throw new RuntimeException(e);
 		}
 	}
@@ -551,8 +542,7 @@ public final class ClusterSingleSignOutHandler {
 		try {
 			sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
 				@Override
-				public boolean isTrusted(java.security.cert.X509Certificate[] chain, String authType)
-						throws java.security.cert.CertificateException {
+				public boolean isTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
 					return true;
 				}
 			}).build();
@@ -561,16 +551,14 @@ public final class ClusterSingleSignOutHandler {
 			throw new RuntimeException(e);
 		}
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
-		return HttpClients.custom().setSSLSocketFactory(sslsf).setMaxConnTotal(8).setMaxConnPerRoute(8)
-				.setRetryHandler(new DefaultHttpRequestRetryHandler(1, true))
-				.setDefaultConnectionConfig(ConnectionConfig.custom().setCharset(Charset.defaultCharset()).build())
-				.build();
+		return HttpClients.custom().setSSLSocketFactory(sslsf).setMaxConnTotal(8).setMaxConnPerRoute(8).setRetryHandler(new DefaultHttpRequestRetryHandler(1, true))
+				.setDefaultConnectionConfig(ConnectionConfig.custom().setCharset(Charset.defaultCharset()).build()).build();
 	}
 	/*--------cluster client end--------*/
 
 	/**
-	 * Compute the redirection url to the CAS server when it's a front channel
-	 * SLO (depending on the relay state parameter).
+	 * Compute the redirection url to the CAS server when it's a front channel SLO
+	 * (depending on the relay state parameter).
 	 *
 	 * @param request
 	 *            The HTTP request.
