@@ -486,7 +486,7 @@ public final class ClusterSingleSignOutHandler {
 
 		// 配置URI
 		HttpPost post = new HttpPost(uri);
-		int timeout = 3000; // 3秒
+		int timeout = 1000; // 1秒
 		post.setConfig(RequestConfig.custom().setConnectionRequestTimeout(timeout).setConnectTimeout(timeout).setSocketTimeout(timeout).build());
 
 		// 传参
